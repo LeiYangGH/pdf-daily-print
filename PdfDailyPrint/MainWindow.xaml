@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PdfDailyPrint"
         mc:Ignorable="d"
-        Title="pdf打印" Height="450" Width="800"
+        Title="自动打印 请勿关闭！" Height="450" Width="800"
+        FontSize="20"
         Loaded="Window_Loaded"
         >
     <Grid>

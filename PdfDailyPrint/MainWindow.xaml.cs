@@ -48,6 +48,7 @@ namespace PdfDailyPrint
                 p.Start();
                 this.alreadyPrintedFiles.Add(fileName);
                 File.AppendAllLines(this.alreadyPrintedFilesTxtName, new string[] { fileName });
+                p.WaitForExit();
             }
             catch (Exception ex)
             {
