@@ -60,7 +60,7 @@ namespace PdfDailyPrint
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            string[] pdfFiles = Directory.GetFiles(Environment.CurrentDirectory, "*.pdf");
+            string[] pdfFiles = Directory.GetFiles(Environment.CurrentDirectory, "*.pdf", SearchOption.AllDirectories);
             if (pdfFiles.Length <= 0)
             {
                 this.txtMsg.Text = "未找到任何pdf文件";
@@ -89,6 +89,8 @@ namespace PdfDailyPrint
             if (DateTime.Now > new DateTime(2020, 7, 11))
                 Application.Current.Shutdown();
 #endif
+            this.txtCurrentDirName.Text = Environment.CurrentDirectory;
+
             if (File.Exists(this.alreadyPrintedFilesTxtName))
                 this.alreadyPrintedFiles = File.ReadAllLines(this.alreadyPrintedFilesTxtName).Select(x => x.Trim()).ToList();
 
