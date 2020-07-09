@@ -5,8 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PdfDailyPrint"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="pdf打印" Height="450" Width="800"
+        Loaded="Window_Loaded"
+        >
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="5">正在打印</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="5">信息</TextBlock>
+        <TextBox x:Name="txtCurrentFileName" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="5" 
+                 IsReadOnly="True"></TextBox>
+        <TextBox x:Name="txtMsg" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="5"
+                 IsReadOnly="True"></TextBox>
     </Grid>
 </Window>
