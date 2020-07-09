@@ -33,10 +33,10 @@ namespace PdfDailyPrint
 
         private void PrintPdf(string fileName)
         {
-            Process p = new Process();
 
             try
             {
+                Process p = new Process();
                 string currentFile = fileName;
                 this.txtCurrentFileName.Text = currentFile;
                 p.StartInfo = new ProcessStartInfo()
@@ -62,12 +62,22 @@ namespace PdfDailyPrint
             if (pdfFiles.Length <= 0)
             {
                 this.txtMsg.Text = "未找到任何pdf文件";
-                return;
+
             }
-            foreach (string pdf in pdfFiles.Except(this.alreadyPrintedFiles))
+            else
             {
-                PrintPdf(pdf);
+                var toPrintFiles = pdfFiles.Except(this.alreadyPrintedFiles);
+                if (toPrintFiles.Any())
+                {
+                    this.txtMsg.Text = $"正在准备依次打印{toPrintFiles.Count()}个pdf文件";
+                    foreach (string pdf in pdfFiles.Except(this.alreadyPrintedFiles))
+                    {
+                        PrintPdf(pdf);
+                    }
+                }
+                this.txtMsg.Text = "正在等待下次扫描（5秒一次）";
             }
+
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
