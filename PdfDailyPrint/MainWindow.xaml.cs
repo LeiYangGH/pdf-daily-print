@@ -33,22 +33,23 @@ namespace PdfDailyPrint
 
         private void PrintPdf(string fileName)
         {
-
             try
             {
-                Process p = new Process();
-                string currentFile = fileName;
-                this.txtCurrentFileName.Text = currentFile;
-                p.StartInfo = new ProcessStartInfo()
+                using (Process p = new Process())
                 {
-                    CreateNoWindow = true,
-                    Verb = "print",
-                    FileName = fileName
-                };
-                p.Start();
-                this.alreadyPrintedFiles.Add(fileName);
-                File.AppendAllLines(this.alreadyPrintedFilesTxtName, new string[] { fileName });
-                p.WaitForExit();
+                    string currentFile = fileName;
+                    this.txtCurrentFileName.Text = currentFile;
+                    p.StartInfo = new ProcessStartInfo()
+                    {
+                        CreateNoWindow = true,
+                        Verb = "print",
+                        FileName = fileName
+                    };
+                    p.Start();
+                    this.alreadyPrintedFiles.Add(fileName);
+                    File.AppendAllLines(this.alreadyPrintedFilesTxtName, new string[] { fileName });
+                    p.WaitForExit();
+                }
             }
             catch (Exception ex)
             {
