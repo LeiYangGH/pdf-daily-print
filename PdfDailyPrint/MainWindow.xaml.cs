@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace PdfDailyPrint
 {
@@ -22,6 +23,9 @@ namespace PdfDailyPrint
     /// </summary>
     public partial class MainWindow : Window
     {
+        private string alreadyPrintedFilesTxtName = "打印历史记录.txt";
+        private List<string> alreadyPrintedFiles = new List<string>();
+        DispatcherTimer dispatcherTimer = new DispatcherTimer();
         public MainWindow()
         {
             InitializeComponent();
@@ -29,22 +33,41 @@ namespace PdfDailyPrint
 
         private void PrintPdf(string fileName)
         {
+            Process p = new Process();
+
             try
             {
-                Process p = new Process();
+                string currentFile = fileName;
+                this.txtCurrentFileName.Text = currentFile;
                 p.StartInfo = new ProcessStartInfo()
                 {
                     CreateNoWindow = true,
                     Verb = "print",
-                    FileName = fileName //put the correct path here
+                    FileName = fileName
                 };
                 p.Start();
+                this.alreadyPrintedFiles.Add(fileName);
+                File.AppendAllLines(this.alreadyPrintedFilesTxtName, new string[] { fileName });
             }
             catch (Exception ex)
             {
                 this.txtMsg.Text = ex.Message;
             }
+        }
 
+
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            string[] pdfFiles = Directory.GetFiles(Environment.CurrentDirectory, "*.pdf");
+            if (pdfFiles.Length <= 0)
+            {
+                this.txtMsg.Text = "未找到任何pdf文件";
+                return;
+            }
+            foreach (string pdf in pdfFiles.Except(this.alreadyPrintedFiles))
+            {
+                PrintPdf(pdf);
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -54,19 +77,12 @@ namespace PdfDailyPrint
             if (DateTime.Now > new DateTime(2020, 7, 11))
                 Application.Current.Shutdown();
 #endif
-            string[] pdfFiles = Directory.GetFiles(Environment.CurrentDirectory, "*.pdf");
-            if (pdfFiles.Length <= 0)
-            {
-                this.txtMsg.Text = "未找到任何pdf文件";
-                return;
-            }
-            else
-            {
-                string currentFile = pdfFiles[0];
-                this.txtCurrentFileName.Text = currentFile;
-                PrintPdf(currentFile);
-            }
+            if (File.Exists(this.alreadyPrintedFilesTxtName))
+                this.alreadyPrintedFiles = File.ReadAllLines(this.alreadyPrintedFilesTxtName).Select(x => x.Trim()).ToList();
 
+            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 5);
+            dispatcherTimer.Start();
         }
     }
 }
